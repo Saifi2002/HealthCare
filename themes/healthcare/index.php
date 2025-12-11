@@ -184,7 +184,7 @@
                                     <th>Email</th>
                                     <th>Date Submitted</th>
                                     <th>Status</th>
-                                    <th>Time Trigger</th>
+                                    <th>Date Trigger</th>
                                 </tr>
                             </thead>
                             <?php  
