@@ -1,60 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <?php wp_head(); ?>
 </head>
+
 <body>
-    
+
     <div class="container">
-        <?php   
+        <?php
         $user = wp_get_current_user();
         ?>
         <h1 class="title">WELCOME <?php echo strtoupper($user->user_login); ?></h1>
 
         <div class="grid">
-            
+
             <aside class="sidebar">
+                <?php
+                $count_post = wp_count_posts('application')->publish;
+                function get_scf_status_count($post_type, $field_name, $field_value)
+                {
+                    $args = array(
+                        'post_type'      => $post_type,
+                        'posts_per_page' => -1, // Get all posts
+                        'post_status'    => 'publish',
+                        'fields'         => 'ids',
+                        'meta_query'     => array(
+                            array(
+                                'key'     => $field_name,
+                                'value'   => $field_value,
+                                'compare' => '=',
+                            ),
+                        ),
+                    );
+
+                    $query = new WP_Query($args);
+                    return $query->post_count;
+                }
+
+                $denied_count = get_scf_status_count('application', 'status', 'denied');
+                $approved_count = get_scf_status_count('application', 'status', 'approved');
+                $follow_up_count = get_scf_status_count('application', 'status', 'follow-up');
+                $acknowledged_count = get_scf_status_count('application', 'status', 'acknowledged');
+
+                // echo "Denied : " . $denied_count;
+                // echo "Approved : " . $approved_count;
+                ?>
                 <div class="card status-card">
-                    <h2>Status of Applications</h2>
+                    <h2><?php echo esc_html__('Status of Applications', 'health-care'); ?></h2>
                     <div class="applications">
                         <div class="status-item custom-status-list">
                             <div>
-                                <p class="label">Applications Submitted</p>
-                                <p class="status-sub">Since last 30 days</p>
+                                <p class="label"><?php echo esc_html__('Applications Submitted', 'health-care'); ?></p>
+                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care'); ?></p>
                             </div>
-                            <p class="number">42</p>
+                            <p class="number"><?php echo $count_post; ?></p>
                         </div>
                         <div class="status-list">
                             <div class="status-item success">
                                 <div>
-                                    <p class="status-label">Approved</p>
-                                    <p class="status-sub">Since last 30 days</p>
+                                    <p class="status-label"><?php echo esc_html__('Approved', 'health-care');  ?> </p>
+                                    <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
                                 </div>
-                                <p class="status-number">25</p>
+                                <p class="status-number"><?php echo $approved_count; ?></p>
                             </div>
                             <div class="status-item info">
                                 <div>
-                                    <p class="status-label">Awaiting Acknowledgment</p>
-                                    <p class="status-sub">Since last 30 days</p>
+                                    <p class="status-label"><?php echo esc_html__('Awaiting Acknowledgment', 'health-care');  ?></p>
+                                    <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
                                 </div>
-                                <p class="status-number">08</p>
+                                <p class="status-number"><?php echo $acknowledged_count; ?></p>
                             </div>
                             <div class="status-item destructive">
                                 <div>
-                                    <p class="status-label">Denied</p>
-                                    <p class="status-sub">Since last 30 days</p>
+                                    <p class="status-label"><?php echo esc_html__('Denied', 'health-care');  ?></p>
+                                    <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
                                 </div>
-                                <p class="status-number">06</p>
+                                <p class="status-number"><?php echo $denied_count; ?></p>
                             </div>
                             <div class="status-item warning">
                                 <div>
-                                    <p class="status-label">Follow-Up Required</p>
-                                    <p class="status-sub">Since last 30 days</p>
+                                    <p class="status-label"><?php echo esc_html__('Follow-Up Required', 'health-care');  ?></p>
+                                    <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
                                 </div>
-                                <p class="status-number">03</p>
+                                <p class="status-number"><?php echo $follow_up_count; ?></p>
                             </div>
                         </div>
                     </div>
@@ -101,7 +133,7 @@
 
             <main class="main-content">
                 <div class="card main-card">
-                    
+
                     <div class="tabs">
                         <button class="tab active" onclick="filterTabs(event, 'all')"><i class="fa-solid fa-eye"></i> View All</button>
                         <button class="tab" onclick="filterTabs(event, 'AARTC')">AARTC</button>
@@ -113,7 +145,7 @@
                         <button class="tab" onclick="filterTabs(event, 'OPRE')">OPRE</button>
                         <button class="tab" onclick="filterTabs(event, 'PSR')">PSR</button>
                     </div>
-                    
+
                     <div class="providers-list">
                         <h2>Providers Lists</h2>
                     </div>
@@ -122,14 +154,14 @@
                         <div class="filter">
                             <i class="iconoir iconoir-filter-alt"></i>
                         </div>
-                    
+
                         <div class="select-wrapper custom-wrapper">
                             <select id="sortSelect" onchange="applyFilters()">
                                 <option value="newest">Most Recent</option>
                                 <option value="oldest">Oldest</option>
                             </select>
                         </div>
-                    
+
                         <div class="select-wrapper">
                             <select id="statusSelect" onchange="applyFilters()">
                                 <option value="all">All Status</option>
@@ -139,7 +171,7 @@
                                 <option value="follow-up">Follow-up</option>
                             </select>
                         </div>
-                    
+
                         <div class="select-wrapper">
                             <select id="typeSelect" onchange="applyFilters()">
                                 <option value="all">All Types</option>
@@ -153,16 +185,16 @@
                                 <option value="PSR">PSR</option>
                             </select>
                         </div>
-                    
+
                         <div class="date-range-filter-container custom-wrapper">
                             <button id="dateRangeToggle" class="filter-dropdown-toggle select-wrapper">
                                 <span id="dateRangeDisplay">Date Range</span>
                                 <!-- <span class="arrow-icon"> &#x2304</span> -->
                             </button>
-                            
+
                             <div id="dateRangePopover" class="filter-popover hidden">
                                 <div id="calendarContainer"></div>
-                                
+
                                 <div class="popover-actions">
                                     <button id="dateRangeClear" class="clear-button">Clear</button>
                                     <button id="dateRangeApply" class="apply-button">Apply</button>
@@ -173,74 +205,94 @@
                             <i class="fa-solid fa-rotate-left"></i> Reset Filter
                         </button>
                     </div>
-                    
+
                     <div class="table-container">
                         <table id="applicationTable">
                             <thead>
                                 <tr>
-                                    <th>Agency</th>
-                                    <th>Type</th>
-                                    <th>Contact Name</th>
-                                    <th>Email</th>
-                                    <th>Date Submitted</th>
-                                    <th>Status</th>
-                                    <th>Date Trigger</th>
+                                    <th><?php echo esc_html__("Agency", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Type", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Contact Name", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Email", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Date Submitted", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Status", "health-care"); ?></th>
+                                    <th><?php echo esc_html__("Date Trigger", "health-care"); ?></th>
                                 </tr>
                             </thead>
-                            <?php  
-                            
-                            $applications = new WP_Query(array(
-                                'post_type' => 'application',
-                                'posts_per_page' => -1,
-                            ));
-                            
-                            if ($applications->have_posts()) :
-                                while ($applications->have_posts()) : $applications->the_post();
-                                $contact_name = get_field('contact_name');
-                                $status = get_field('status');
-                                $email = get_field('email');
-                                $expiry_date = get_field('expiry_date');
-                                $title = get_the_title();
-                                $category = get_the_category()[0]->name;
-                                $date = get_the_date('d M, Y');
-                                
-                            ?>
+                            <tbody id="tableBody">
+                                <?php
+                                // Fetch ALL posts for client-side pagination
+                                $applications = new WP_Query(array(
+                                    'post_type' => 'application',
+                                    'posts_per_page' => -1,
+                                    // 'orderby' => 'date',
+                                    // 'order' => 'DESC'
+                                ));
 
-                            <tbody id="tableBody"> 
-                                <tr data-type="CCSS">
-                                    <td><a href="pages/application.html"><?php echo $title; ?></a></td>
-                                    <td><?php echo $category; ?></td>
-                                    <td><?php echo $contact_name; ?></td>
-                                    <td><?php echo $email; ?></td>
-                                    <td><?php echo $date; ?></td>
-                                    <td><span class="badge success"><?php echo $status; ?></span></td>
-                                    <td><?php echo $expiry_date; ?></td>
-                                </tr>
-                                <?php endwhile; 
-                                wp_reset_postdata();
+                                if ($applications->have_posts()) :
+                                    while ($applications->have_posts()) : $applications->the_post();
+                                        $contact_name = get_field('contact_name');
+                                        $status = get_field('status');
+                                        $email = get_field('email');
+                                        $expiry_date = get_field('expiry_date');
+                                        $title = get_the_title();
+
+                                        // Get category
+                                        $categories = get_the_category();
+                                        $category = !empty($categories) ? $categories[0]->name : 'Uncategorized';
+
+                                        $date = get_the_date('m/d/Y'); // Format to match JavaScript date parsing
+
+                                        // Determine badge class based on status
+                                        $badge_class = 'success';
+                                        $status_lower = strtolower($status);
+                                        if (strpos($status_lower, 'denied') !== false) {
+                                            $badge_class = 'danger';
+                                        } elseif (strpos($status_lower, 'follow') !== false) {
+                                            $badge_class = 'warning';
+                                        } elseif (strpos($status_lower, 'awaiting') !== false || strpos($status_lower, 'acknowledged') !== false) {
+                                            $badge_class = 'info';
+                                        }
+                                ?>
+                                        <tr data-type="<?php echo esc_attr($category); ?>">
+                                            <td><a href="<?php the_permalink(); ?>"><?php echo esc_html($title); ?></a></td>
+                                            <td><?php echo esc_html($category); ?></td>
+                                            <td><?php echo esc_html($contact_name); ?></td>
+                                            <td><?php echo esc_html($email); ?></td>
+                                            <td><?php echo esc_html($date); ?></td>
+                                            <td><span class="badge <?php echo esc_attr($badge_class); ?>"><?php echo esc_html($status); ?></span></td>
+                                            <td><?php echo esc_html($expiry_date); ?></td>
+                                        </tr>
+                                    <?php
+                                    endwhile;
+                                    wp_reset_postdata();
+                                else:
+                                    ?>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 20px;">
+                                            <?php echo esc_html__("No applications found.", "health-care"); ?>
+                                        </td>
+                                    </tr>
+                                <?php
                                 endif;
                                 ?>
                             </tbody>
                         </table>
                     </div>
 
+                    <!-- Pagination Container (JavaScript will populate this) -->
                     <nav class="pagination-container" aria-label="Page navigation">
                         <ul class="pagination" id="pagination-links">
-                            <li class="page-item "><a href="#">&laquo;</a></li>
-                            <li class="page-item active"><a href="#">1</a></li>
-                            <li class="page-item"><a href="#">2</a></li>
-                            <li class="page-item"><a href="#">3</a></li>
-                            <li class="page-item"><a href="#">4</a></li>
-                            <li class="page-item"><a href="#">5</a></li>
-                            <li class="page-item"><a href="#">&raquo;</a></li>
+                            <!-- Pagination links will be generated by JS -->
                         </ul>
                     </nav>
-                    
+
                 </div>
-                
+
             </main>
         </div>
     </div>
     <?php wp_footer(); ?>
 </body>
+
 </html>

@@ -16,7 +16,7 @@ let selectedEndDate = null;
 let currentCalendarDate = new Date(); // Tracks the currently displayed month/year
 
 // --- Pagination State and Configuration ---
-const ITEMS_PER_PAGE = 10; // <<< CONFIGURATION: Set to 2 rows per page as requested for testing
+const ITEMS_PER_PAGE = 3; // <<< CONFIGURATION: Set to 2 rows per page as requested for testing
 let paginationRows = []; // Array to store all currently filtered/sorted visible rows (the "Master List")
 let currentPage = 1;
 
@@ -328,12 +328,6 @@ function renderPaginationLinks() {
     if (!paginationContainer) return;
 
     const totalPages = Math.ceil(paginationRows.length / ITEMS_PER_PAGE);
-    
-    // Hide pagination if there's only one page or fewer
-    // if (totalPages <= 1) {
-    //     paginationContainer.innerHTML = '';
-    //     return;
-    // }
     
     let html = '';
     const MAX_PAGES_TO_SHOW = 4; 
