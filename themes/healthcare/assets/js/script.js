@@ -575,3 +575,56 @@ window.resetFilters = function() {
 
     applyFilters(); 
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab');
+    const tableBody = document.getElementById('tableBody');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Get category ID
+            const categoryId = this.getAttribute('data-category');
+            
+            // Fetch posts
+            fetchPosts(categoryId);
+        });
+    });
+    
+    function fetchPosts(categoryId) {
+        // Show loading state
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Loading...</td></tr>';
+        
+        fetch(ajax_params.ajax_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'fetch_category_posts',
+                category_id: categoryId,
+                nonce: ajax_params.nonce
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                tableBody.innerHTML = data.data.html;
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No applications found.</td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Error loading applications.</td></tr>';
+        });
+    }
+});

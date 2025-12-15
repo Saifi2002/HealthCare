@@ -131,18 +131,17 @@ get_header();
                     'post_type' => 'application',
                     'taxonomy' => 'category',
                 );
-
                 $cats = get_categories($args);
-
                 ?>
-
                 <div class="tabs">
-                    <button class="tab active" onclick="filterTabs(event, 'all')"><i class="fa-solid fa-eye"></i> View All</button>
+                    <button class="tab active" data-category="all">
+                        <i class="fa-solid fa-eye"></i> View All
+                    </button>
                     <?php foreach ($cats as $cat) { ?>
-                        <button class="tab" value="<?php echo $cat->term_id; ?>" onclick="filterTabs(event, 'AARTC')"><?php echo $cat->name; ?></button>
-                    <?php
-                    }
-                    ?>
+                        <button class="tab" data-category="<?php echo $cat->term_id; ?>">
+                            <?php echo $cat->name; ?>
+                        </button>
+                    <?php } ?>
                 </div>
 
                 <div class="providers-list">
@@ -219,12 +218,10 @@ get_header();
                         </thead>
                         <tbody id="tableBody">
                             <?php
-                            // Fetch ALL posts for client-side pagination
+                            // Initial load - show all posts
                             $applications = new WP_Query(array(
                                 'post_type' => 'application',
                                 'posts_per_page' => -1,
-                                // 'orderby' => 'date',
-                                // 'order' => 'DESC'
                             ));
 
                             if ($applications->have_posts()) :
@@ -239,7 +236,7 @@ get_header();
                                     $categories = get_the_category();
                                     $category = !empty($categories) ? $categories[0]->name : 'Uncategorized';
 
-                                    $date = get_the_date('m/d/Y'); // Format to match JavaScript date parsing
+                                    $date = get_the_date('m/d/Y');
 
                                     // Determine badge class based on status
                                     $badge_class = 'success';

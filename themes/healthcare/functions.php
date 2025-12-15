@@ -1,5 +1,5 @@
 <?php
-
+// Enqueue CSS files
 add_action('wp_enqueue_scripts', 'healthcare_enqueue_styles');
 if (! function_exists('healthcare_enqueue_styles')) {
     function healthcare_enqueue_styles()
@@ -47,6 +47,7 @@ if (! function_exists('healthcare_enqueue_styles')) {
     }
 }
 
+// Enqueue JS files
 add_action('wp_enqueue_scripts', 'healthcare_enqueue_scripts');
 if (! function_exists('healthcare_enqueue_scripts')) {
     function healthcare_enqueue_scripts()
@@ -60,11 +61,15 @@ if (! function_exists('healthcare_enqueue_scripts')) {
             filemtime(get_template_directory() . '/assets/js/script.js'),
             true // load in footer
         );
+        wp_localize_script('healthcare-ui-js', 'ajax_params', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('fetch_posts_nonce')
+        ));
     }
 }
 
 
-
+// Register Custom Post Type: Application
 add_action('init', 'application_post_type');
 if (! function_exists('application_post_type')) {
     function application_post_type()
@@ -110,5 +115,86 @@ if (! function_exists('application_post_type')) {
             'capability_type'       => 'post',
         );
         register_post_type('application', $args);
+    }
+}
+
+
+// AJAX handler for logged-in users
+add_action('wp_ajax_fetch_category_posts', 'fetch_category_posts_callback');
+add_action('wp_ajax_nopriv_fetch_category_posts', 'fetch_category_posts_callback');
+
+function fetch_category_posts_callback()
+{
+    // Verify nonce
+    check_ajax_referer('fetch_posts_nonce', 'nonce');
+
+    $category_id = isset($_POST['category_id']) ? sanitize_text_field($_POST['category_id']) : 'all';
+
+    $args = array(
+        'post_type' => 'application',
+        'posts_per_page' => -1,
+        'post_status' => 'publish'
+    );
+
+    // Add category filter if not 'all'
+    if ($category_id !== 'all') {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => 'category',
+                'field' => 'term_id',
+                'terms' => intval($category_id)
+            )
+        );
+    }
+
+    $applications = new WP_Query($args);
+
+    if ($applications->have_posts()) {
+        ob_start();
+
+        while ($applications->have_posts()) {
+            $applications->the_post();
+
+            $contact_name = get_field('contact_name');
+            $status = get_field('status');
+            $email = get_field('email');
+            $expiry_date = get_field('expiry_date');
+            $title = get_the_title();
+
+            // Get category
+            $categories = get_the_category();
+            $category = !empty($categories) ? $categories[0]->name : 'Uncategorized';
+
+            $date = get_the_date('m/d/Y');
+
+            // Determine badge class based on status
+            $badge_class = 'success';
+            $status_lower = strtolower($status);
+            if (strpos($status_lower, 'denied') !== false) {
+                $badge_class = 'danger';
+            } elseif (strpos($status_lower, 'follow') !== false) {
+                $badge_class = 'warning';
+            } elseif (strpos($status_lower, 'awaiting') !== false || strpos($status_lower, 'acknowledged') !== false) {
+                $badge_class = 'info';
+            }
+?>
+            <tr data-type="<?php echo esc_attr($category); ?>">
+                <td><a href="<?php the_permalink(); ?>"><?php echo esc_html($title); ?></a></td>
+                <td><?php echo esc_html($category); ?></td>
+                <td><?php echo esc_html($contact_name); ?></td>
+                <td><?php echo esc_html($email); ?></td>
+                <td><?php echo esc_html($date); ?></td>
+                <td><span class="badge <?php echo esc_attr($badge_class); ?>"><?php echo esc_html($status); ?></span></td>
+                <td><?php echo esc_html($expiry_date); ?></td>
+            </tr>
+<?php
+        }
+
+        $html = ob_get_clean();
+        wp_reset_postdata();
+
+        wp_send_json_success(array('html' => $html));
+    } else {
+        wp_send_json_error(array('message' => 'No applications found'));
     }
 }
