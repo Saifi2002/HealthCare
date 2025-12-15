@@ -597,6 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fetch posts
             fetchPosts(categoryId);
         });
+        
     });
     
     function fetchPosts(categoryId) {
