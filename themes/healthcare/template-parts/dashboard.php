@@ -181,7 +181,6 @@ get_header();
                         <div class="date-range-filter-container custom-wrapper">
                             <button id="dateRangeToggle" class="filter-dropdown-toggle select-wrapper">
                                 <span id="dateRangeDisplay">Date Range</span>
-                                <!-- <span class="arrow-icon"> &#x2304</span> -->
                             </button>
 
                             <div id="dateRangePopover" class="filter-popover hidden">
