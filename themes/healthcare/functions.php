@@ -123,78 +123,97 @@ if (! function_exists('application_post_type')) {
 add_action('wp_ajax_fetch_category_posts', 'fetch_category_posts_callback');
 add_action('wp_ajax_nopriv_fetch_category_posts', 'fetch_category_posts_callback');
 
-function fetch_category_posts_callback()
-{
-    // Verify nonce
+function fetch_category_posts_callback() {
+    // Security
     check_ajax_referer('fetch_posts_nonce', 'nonce');
 
+    // Read params
     $category_id = isset($_POST['category_id']) ? sanitize_text_field($_POST['category_id']) : 'all';
+    $status      = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'all';
+    $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
 
+    // Base query
     $args = array(
-        'post_type' => 'application',
+        'post_type'      => 'application',
         'posts_per_page' => -1,
-        'post_status' => 'publish'
+        'post_status'    => 'publish',
     );
 
-    // Add category filter if not 'all'
-    if ($category_id !== 'all') {
-        $args['tax_query'] = array(
+    /**
+     * CATEGORY / TYPE FILTER
+     * Tabs + type dropdown both end up here
+     */
+    if ($category_id !== 'all' && !empty($category_id)) {
+        $args['cat'] = (int) $category_id;
+    } elseif ($type !== 'all' && !empty($type)) {
+        $args['cat'] = (int) $type;
+    }
+
+    /**
+     * STATUS FILTER (ACF field)
+     */
+    if ($status !== 'all' && !empty($status)) {
+        $args['meta_query'] = array(
             array(
-                'taxonomy' => 'category',
-                'field' => 'term_id',
-                'terms' => intval($category_id)
+                'key'     => 'status',
+                'value'   => $status,
+                'compare' => 'LIKE', // allows "Awaiting Acknowledgment"
             )
         );
     }
 
     $applications = new WP_Query($args);
 
-    if ($applications->have_posts()) {
-        ob_start();
+    $html = '';
 
+    if ($applications->have_posts()) {
         while ($applications->have_posts()) {
             $applications->the_post();
 
             $contact_name = get_field('contact_name');
-            $status = get_field('status');
-            $email = get_field('email');
-            $expiry_date = get_field('expiry_date');
-            $title = get_the_title();
+            $status_value = get_field('status');
+            $email        = get_field('email');
+            $expiry_date  = get_field('expiry_date');
+            $title        = get_the_title();
 
-            // Get category
-            $categories = get_the_category();
-            $category = !empty($categories) ? $categories[0]->name : 'Uncategorized';
+            $categories   = get_the_category();
+            $category_name = $categories[0]->name ?? 'Uncategorized';
+            $cat_id        = $categories[0]->term_id ?? '';
 
             $date = get_the_date('m/d/Y');
 
-            // Determine badge class based on status
+            // Badge class
             $badge_class = 'success';
-            $status_lower = strtolower($status);
+            $status_lower = strtolower($status_value);
+
             if (strpos($status_lower, 'denied') !== false) {
                 $badge_class = 'danger';
             } elseif (strpos($status_lower, 'follow') !== false) {
                 $badge_class = 'warning';
-            } elseif (strpos($status_lower, 'awaiting') !== false || strpos($status_lower, 'acknowledged') !== false) {
+            } elseif (
+                strpos($status_lower, 'awaiting') !== false ||
+                strpos($status_lower, 'acknowledged') !== false
+            ) {
                 $badge_class = 'info';
             }
-?>
-            <tr data-type="<?php echo esc_attr($category); ?>">
-                <td><a href="<?php the_permalink(); ?>"><?php echo esc_html($title); ?></a></td>
-                <td><?php echo esc_html($category); ?></td>
-                <td><?php echo esc_html($contact_name); ?></td>
-                <td><?php echo esc_html($email); ?></td>
-                <td><?php echo esc_html($date); ?></td>
-                <td><span class="badge <?php echo esc_attr($badge_class); ?>"><?php echo esc_html($status); ?></span></td>
-                <td><?php echo esc_html($expiry_date); ?></td>
-            </tr>
-<?php
+
+            $html .= '<tr data-type="' . esc_attr($category_name) . '" data-category-id="' . esc_attr($cat_id) . '">';
+            $html .= '<td><a href="' . esc_url(get_permalink()) . '">' . esc_html($title) . '</a></td>';
+            $html .= '<td>' . esc_html($category_name) . '</td>';
+            $html .= '<td>' . esc_html($contact_name) . '</td>';
+            $html .= '<td>' . esc_html($email) . '</td>';
+            $html .= '<td>' . esc_html($date) . '</td>';
+            $html .= '<td><span class="badge ' . esc_attr($badge_class) . '">' . esc_html($status_value) . '</span></td>';
+            $html .= '<td>' . esc_html($expiry_date) . '</td>';
+            $html .= '</tr>';
         }
-
-        $html = ob_get_clean();
         wp_reset_postdata();
-
-        wp_send_json_success(array('html' => $html));
     } else {
-        wp_send_json_error(array('message' => 'No applications found'));
+        $html = '<tr><td colspan="7" style="text-align:center;padding:20px;">No applications found.</td></tr>';
     }
+
+    wp_send_json_success(array(
+        'html' => $html
+    ));
 }
+
