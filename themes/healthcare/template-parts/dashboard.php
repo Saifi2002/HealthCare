@@ -160,29 +160,43 @@ get_header();
                         </select>
                     </div>
 
-                    <div class="select-wrapper">
-                        <select id="statusSelect" onchange="applyFilters()">
-                            <option value="all">All Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="acknowledged">Acknowledged</option>
-                            <option value="denied">Denied</option>
-                            <option value="follow-up">Follow-up</option>
-                        </select>
-                    </div>
+                    <?php
+                    $app_status = new WP_Query(array(
+                        'post_type' => 'application',
+                        'posts_per_page' => -1,
+                    ));
+                    if ($app_status->have_posts()) :
+                        $status_terms = array();
+                        while ($app_status->have_posts()) : $app_status->the_post();
+                            $status = get_field('status');
+                            if ($status && !in_array($status, $status_terms)) {
+                                $status_terms[] = $status;
+                            }
+                        endwhile;
+                        wp_reset_postdata();
+                    ?>
+                        <div class="select-wrapper">
+                            <select id="statusSelect" onchange="applyFilters()">
+                                <option value="all">All Status</option>
+                                <?php
+                                foreach ($status_terms as $status) :
+                                ?>
+                                    <option value="<?php echo esc_attr($status); ?>"><?php echo esc_html(ucwords($status)); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    <?php endif; ?>
+
 
                     <div class="select-wrapper">
                         <select id="typeSelect" onchange="applyFilters()">
-                            <option value="all">All Types</option>
-                            <option value="CCSS">CCSS</option>
-                            <option value="AARTC">AARTC</option>
-                            <option value="ACT">ACT</option>
-                            <option value="CCBHC">CCBHC</option>
-                            <option value="IOP">IOP</option>
-                            <option value="MCT">MCT</option>
-                            <option value="OPRE">OPRE</option>
-                            <option value="PSR">PSR</option>
+                            <option value="all">View All</option> <!-- Default option -->
+                            <?php foreach ($cats as $cat) { ?>
+                                <option value="<?php echo $cat->term_id; ?>"><?php echo $cat->name; ?></option>
+                            <?php } ?>
                         </select>
                     </div>
+
 
                     <div class="date-range-filter-container custom-wrapper">
                         <button id="dateRangeToggle" class="filter-dropdown-toggle select-wrapper">

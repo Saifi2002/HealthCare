@@ -16,7 +16,7 @@ let selectedEndDate = null;
 let currentCalendarDate = new Date(); // Tracks the currently displayed month/year
 
 // --- Pagination State and Configuration ---
-const ITEMS_PER_PAGE = 3; // <<< CONFIGURATION: Set to 2 rows per page as requested for testing
+const ITEMS_PER_PAGE = 5; // <<< CONFIGURATION: Set to 2 rows per page as requested for testing
 let paginationRows = []; // Array to store all currently filtered/sorted visible rows (the "Master List")
 let currentPage = 1;
 
