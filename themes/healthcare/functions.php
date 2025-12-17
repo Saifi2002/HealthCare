@@ -12,6 +12,12 @@ if (! function_exists('healthcare_enqueue_styles')) {
             array(),
             filemtime(get_template_directory() . '/assets/css/style.css')
         );
+        wp_enqueue_style(
+            'healthcare-application-style',
+            get_template_directory_uri() . '/assets/css/application.css',
+            array(),
+            filemtime(get_template_directory() . '/assets/css/application.css')
+        );
 
         // Lucide Icons
         wp_enqueue_style(
@@ -48,22 +54,129 @@ if (! function_exists('healthcare_enqueue_styles')) {
 }
 
 // Enqueue JS files
-add_action('wp_enqueue_scripts', 'healthcare_enqueue_scripts');
 if (! function_exists('healthcare_enqueue_scripts')) {
     function healthcare_enqueue_scripts()
     {
 
-        // UI JS file
+        // Enqueue JS in footer
         wp_enqueue_script(
             'healthcare-ui-js',
             get_template_directory_uri() . '/assets/js/script.js',
-            array(), // dependencies (add ['jquery'] if needed)
-            filemtime(get_template_directory() . '/assets/js/script.js'),
+            array(), // dependencies
+            filemtime( get_template_directory() . '/assets/js/script.js' ),
             true // load in footer
         );
-        wp_localize_script('healthcare-ui-js', 'ajax_params', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('fetch_posts_nonce')
+
+        // Localize AJAX params
+        wp_localize_script(
+            'healthcare-ui-js',
+            'ajax_params',
+            array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('fetch_posts_nonce'),
+            )
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'healthcare_enqueue_scripts');
+
+
+// AJAX handler for logged-in users
+add_action('wp_ajax_fetch_category_posts', 'fetch_category_posts_callback');
+add_action('wp_ajax_nopriv_fetch_category_posts', 'fetch_category_posts_callback');
+if (! function_exists('fetch_category_posts_callback')) {
+    function fetch_category_posts_callback()
+    {
+        // Security
+        check_ajax_referer('fetch_posts_nonce', 'nonce');
+
+        // Read params
+        $category_id = isset($_POST['category_id']) ? sanitize_text_field($_POST['category_id']) : 'all';
+        $status      = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'all';
+        $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
+
+        // Base query
+        $args = array(
+            'post_type'      => 'application',
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+        );
+
+        /**
+         * CATEGORY / TYPE FILTER
+         * Tabs + type dropdown both end up here
+         */
+        if ($category_id !== 'all' && !empty($category_id)) {
+            $args['cat'] = (int) $category_id;
+        } elseif ($type !== 'all' && !empty($type)) {
+            $args['cat'] = (int) $type;
+        }
+
+        /**
+         * STATUS FILTER (ACF field)
+         */
+        if ($status !== 'all' && !empty($status)) {
+            $args['meta_query'] = array(
+                array(
+                    'key'     => 'status',
+                    'value'   => $status,
+                    'compare' => 'LIKE', // allows "Awaiting Acknowledgment"
+                )
+            );
+        }
+
+        $applications = new WP_Query($args);
+
+        $html = '';
+
+        if ($applications->have_posts()) {
+            while ($applications->have_posts()) {
+                $applications->the_post();
+
+                $contact_name = get_field('contact_name');
+                $status_value = get_field('status');
+                $email        = get_field('email');
+                $expiry_date  = get_field('expiry_date');
+                $title        = get_the_title();
+
+                $categories   = get_the_category();
+                $category_name = $categories[0]->name ?? 'Uncategorized';
+                $cat_id        = $categories[0]->term_id ?? '';
+
+                $date = get_the_date('m/d/Y');
+
+                // Badge class
+                $badge_class = 'success';
+                $status_lower = strtolower($status_value);
+
+                if (strpos($status_lower, 'denied') !== false) {
+                    $badge_class = 'danger';
+                } elseif (strpos($status_lower, 'follow') !== false) {
+                    $badge_class = 'warning';
+                } elseif (
+                    strpos($status_lower, 'awaiting') !== false ||
+                    strpos($status_lower, 'acknowledged') !== false
+                ) {
+                    $badge_class = 'info';
+                }
+
+                $html .= '<tr data-type="' . esc_attr($category_name) . '" data-category-id="' . esc_attr($cat_id) . '">';
+                $html .= '<td><a href="' . esc_url(get_permalink()) . '">' . esc_html($title) . '</a></td>';
+                $html .= '<td>' . esc_html($category_name) . '</td>';
+                $html .= '<td>' . esc_html($contact_name) . '</td>';
+                $html .= '<td>' . esc_html($email) . '</td>';
+                $html .= '<td>' . esc_html($date) . '</td>';
+                $html .= '<td><span class="badge ' . esc_attr($badge_class) . '">' . esc_html($status_value) . '</span></td>';
+                $html .= '<td>' . esc_html($expiry_date) . '</td>';
+                $html .= '</tr>';
+            }
+            wp_reset_postdata();
+        } else {
+            $html = '<tr><td colspan="7" style="text-align:center;padding:20px;">No applications found.</td></tr>';
+        }
+
+        wp_send_json_success(array(
+            'html' => $html
         ));
     }
 }
@@ -117,103 +230,3 @@ if (! function_exists('application_post_type')) {
         register_post_type('application', $args);
     }
 }
-
-
-// AJAX handler for logged-in users
-add_action('wp_ajax_fetch_category_posts', 'fetch_category_posts_callback');
-add_action('wp_ajax_nopriv_fetch_category_posts', 'fetch_category_posts_callback');
-
-function fetch_category_posts_callback() {
-    // Security
-    check_ajax_referer('fetch_posts_nonce', 'nonce');
-
-    // Read params
-    $category_id = isset($_POST['category_id']) ? sanitize_text_field($_POST['category_id']) : 'all';
-    $status      = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'all';
-    $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
-
-    // Base query
-    $args = array(
-        'post_type'      => 'application',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-    );
-
-    /**
-     * CATEGORY / TYPE FILTER
-     * Tabs + type dropdown both end up here
-     */
-    if ($category_id !== 'all' && !empty($category_id)) {
-        $args['cat'] = (int) $category_id;
-    } elseif ($type !== 'all' && !empty($type)) {
-        $args['cat'] = (int) $type;
-    }
-
-    /**
-     * STATUS FILTER (ACF field)
-     */
-    if ($status !== 'all' && !empty($status)) {
-        $args['meta_query'] = array(
-            array(
-                'key'     => 'status',
-                'value'   => $status,
-                'compare' => 'LIKE', // allows "Awaiting Acknowledgment"
-            )
-        );
-    }
-
-    $applications = new WP_Query($args);
-
-    $html = '';
-
-    if ($applications->have_posts()) {
-        while ($applications->have_posts()) {
-            $applications->the_post();
-
-            $contact_name = get_field('contact_name');
-            $status_value = get_field('status');
-            $email        = get_field('email');
-            $expiry_date  = get_field('expiry_date');
-            $title        = get_the_title();
-
-            $categories   = get_the_category();
-            $category_name = $categories[0]->name ?? 'Uncategorized';
-            $cat_id        = $categories[0]->term_id ?? '';
-
-            $date = get_the_date('m/d/Y');
-
-            // Badge class
-            $badge_class = 'success';
-            $status_lower = strtolower($status_value);
-
-            if (strpos($status_lower, 'denied') !== false) {
-                $badge_class = 'danger';
-            } elseif (strpos($status_lower, 'follow') !== false) {
-                $badge_class = 'warning';
-            } elseif (
-                strpos($status_lower, 'awaiting') !== false ||
-                strpos($status_lower, 'acknowledged') !== false
-            ) {
-                $badge_class = 'info';
-            }
-
-            $html .= '<tr data-type="' . esc_attr($category_name) . '" data-category-id="' . esc_attr($cat_id) . '">';
-            $html .= '<td><a href="' . esc_url(get_permalink()) . '">' . esc_html($title) . '</a></td>';
-            $html .= '<td>' . esc_html($category_name) . '</td>';
-            $html .= '<td>' . esc_html($contact_name) . '</td>';
-            $html .= '<td>' . esc_html($email) . '</td>';
-            $html .= '<td>' . esc_html($date) . '</td>';
-            $html .= '<td><span class="badge ' . esc_attr($badge_class) . '">' . esc_html($status_value) . '</span></td>';
-            $html .= '<td>' . esc_html($expiry_date) . '</td>';
-            $html .= '</tr>';
-        }
-        wp_reset_postdata();
-    } else {
-        $html = '<tr><td colspan="7" style="text-align:center;padding:20px;">No applications found.</td></tr>';
-    }
-
-    wp_send_json_success(array(
-        'html' => $html
-    ));
-}
-

@@ -640,3 +640,18 @@ window.resetFilters = function () {
     // Reset to show all posts
     fetchPosts('all');
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
