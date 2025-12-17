@@ -848,7 +848,7 @@ ACTION BUTTONS (Clear/Apply)
 }
 
 /* Medium Desktop / Large Tablet: 1025px – 1239px */
-@media (min-width: 1025px) {
+@media (min-width: 1025px ) and (max-width: 1239px){
     .grid {
         grid-template-columns: 350px 1fr !important;
         gap: 20px;

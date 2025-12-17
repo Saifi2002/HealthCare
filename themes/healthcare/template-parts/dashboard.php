@@ -10,116 +10,6 @@ get_header();
 
     <div class="grid">
 
-        <aside class="sidebar">
-            <?php
-            $count_post = wp_count_posts('application')->publish;
-            function get_scf_status_count($post_type, $field_name, $field_value)
-            {
-                $args = array(
-                    'post_type'      => $post_type,
-                    'posts_per_page' => -1,
-                    'post_status'    => 'publish',
-                    'fields'         => 'ids',
-                    'meta_query'     => array(
-                        array(
-                            'key'     => $field_name,
-                            'value'   => $field_value,
-                            'compare' => '=',
-                        ),
-                    ),
-                );
-
-                $query = new WP_Query($args);
-                return $query->post_count;
-            }
-
-            $denied_count = get_scf_status_count('application', 'status', 'denied');
-            $approved_count = get_scf_status_count('application', 'status', 'approved');
-            $follow_up_count = get_scf_status_count('application', 'status', 'follow-up');
-            $acknowledged_count = get_scf_status_count('application', 'status', 'acknowledged');
-            ?>
-            <div class="card status-card">
-                <h2><?php echo esc_html__('Status of Applications', 'health-care'); ?></h2>
-                <div class="applications">
-                    <div class="status-item custom-status-list">
-                        <div>
-                            <p class="label"><?php echo esc_html__('Applications Submitted', 'health-care'); ?></p>
-                            <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care'); ?></p>
-                        </div>
-                        <p class="number"><?php echo $count_post; ?></p>
-                    </div>
-                    <div class="status-list">
-                        <div class="status-item success">
-                            <div>
-                                <p class="status-label"><?php echo esc_html__('Approved', 'health-care');  ?> </p>
-                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
-                            </div>
-                            <p class="status-number"><?php echo $approved_count; ?></p>
-                        </div>
-                        <div class="status-item info">
-                            <div>
-                                <p class="status-label"><?php echo esc_html__('Awaiting Acknowledgment', 'health-care');  ?></p>
-                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
-                            </div>
-                            <p class="status-number"><?php echo $acknowledged_count; ?></p>
-                        </div>
-                        <div class="status-item destructive">
-                            <div>
-                                <p class="status-label"><?php echo esc_html__('Denied', 'health-care');  ?></p>
-                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
-                            </div>
-                            <p class="status-number"><?php echo $denied_count; ?></p>
-                        </div>
-                        <div class="status-item warning">
-                            <div>
-                                <p class="status-label"><?php echo esc_html__('Follow-Up Required', 'health-care');  ?></p>
-                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
-                            </div>
-                            <p class="status-number"><?php echo $follow_up_count; ?></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card activity-card">
-                <h2>BHSD Activity Log</h2>
-                <div class="activity-list">
-                    <div class="activity">
-                        <div class="dot"></div>
-                        <div class="activity-log">
-                            <p class="date">Oct 8, 2024 - 6:04 PM</p>
-                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
-                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
-                        </div>
-                    </div>
-                    <div class="activity">
-                        <div class="dot"></div>
-                        <div class="activity-log">
-                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
-                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
-                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
-                        </div>
-                    </div>
-                    <div class="activity">
-                        <div class="dot"></div>
-                        <div class="activity-log">
-                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
-                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
-                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
-                        </div>
-                    </div>
-                    <div class="activity">
-                        <div class="dot"></div>
-                        <div class="activity-log">
-                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
-                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
-                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
         <main class="main-content">
             <div class="card main-card">
 
@@ -295,6 +185,116 @@ get_header();
             </div>
 
         </main>
+
+                <aside class="sidebar">
+            <?php
+            $count_post = wp_count_posts('application')->publish;
+            function get_scf_status_count($post_type, $field_name, $field_value)
+            {
+                $args = array(
+                    'post_type'      => $post_type,
+                    'posts_per_page' => -1,
+                    'post_status'    => 'publish',
+                    'fields'         => 'ids',
+                    'meta_query'     => array(
+                        array(
+                            'key'     => $field_name,
+                            'value'   => $field_value,
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+
+                $query = new WP_Query($args);
+                return $query->post_count;
+            }
+
+            $denied_count = get_scf_status_count('application', 'status', 'denied');
+            $approved_count = get_scf_status_count('application', 'status', 'approved');
+            $follow_up_count = get_scf_status_count('application', 'status', 'follow-up');
+            $acknowledged_count = get_scf_status_count('application', 'status', 'acknowledged');
+            ?>
+            <div class="card status-card">
+                <h2><?php echo esc_html__('Status of Applications', 'health-care'); ?></h2>
+                <div class="applications">
+                    <div class="status-item custom-status-list">
+                        <div>
+                            <p class="label"><?php echo esc_html__('Applications Submitted', 'health-care'); ?></p>
+                            <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care'); ?></p>
+                        </div>
+                        <p class="number"><?php echo $count_post; ?></p>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-item success">
+                            <div>
+                                <p class="status-label"><?php echo esc_html__('Approved', 'health-care');  ?> </p>
+                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
+                            </div>
+                            <p class="status-number"><?php echo $approved_count; ?></p>
+                        </div>
+                        <div class="status-item info">
+                            <div>
+                                <p class="status-label"><?php echo esc_html__('Awaiting Acknowledgment', 'health-care');  ?></p>
+                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
+                            </div>
+                            <p class="status-number"><?php echo $acknowledged_count; ?></p>
+                        </div>
+                        <div class="status-item destructive">
+                            <div>
+                                <p class="status-label"><?php echo esc_html__('Denied', 'health-care');  ?></p>
+                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
+                            </div>
+                            <p class="status-number"><?php echo $denied_count; ?></p>
+                        </div>
+                        <div class="status-item warning">
+                            <div>
+                                <p class="status-label"><?php echo esc_html__('Follow-Up Required', 'health-care');  ?></p>
+                                <p class="status-sub"><?php echo esc_html__('Since last 30 days', 'health-care');  ?></p>
+                            </div>
+                            <p class="status-number"><?php echo $follow_up_count; ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card activity-card">
+                <h2>BHSD Activity Log</h2>
+                <div class="activity-list">
+                    <div class="activity">
+                        <div class="dot"></div>
+                        <div class="activity-log">
+                            <p class="date">Oct 8, 2024 - 6:04 PM</p>
+                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
+                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="dot"></div>
+                        <div class="activity-log">
+                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
+                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
+                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="dot"></div>
+                        <div class="activity-log">
+                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
+                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
+                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="dot"></div>
+                        <div class="activity-log">
+                            <p class="date">Oct 8, 2024 - 5:48 PM</p>
+                            <p class="text">Document viewed by Phil Huston - kim.rogge.rogers@gmail.com (viewed)</p>
+                            <p class="status"> <i>Status: <span> Viewed successfully.</span></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
 </div>
 
