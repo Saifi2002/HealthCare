@@ -186,7 +186,7 @@ get_header();
 
         </main>
 
-                <aside class="sidebar">
+        <aside class="sidebar">
             <?php
             $count_post = wp_count_posts('application')->publish;
             function get_scf_status_count($post_type, $field_name, $field_value)

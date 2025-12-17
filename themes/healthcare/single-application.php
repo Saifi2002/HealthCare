@@ -3,55 +3,65 @@ get_header();
 ?>
 
 <div class="container">
-    <h1 class="title"><?php echo get_the_title(); ?></h1>
+    <h1 class="title"><?php echo esc_html__(get_the_title(), "health-care"); ?></h1>
 
-    <h2 class="table-title">List of Applications</h2>
+    <h2 class="table-title"><?php echo esc_html__("Applications", "health-care"); ?></h2>
     <div class="grid">
 
         <main class="main-content">
 
             <div class="card main-card">
                 <div class=" table-container custom-table-container">
+
                     <table class="application-table">
                         <thead>
                             <tr>
-                                <th>Applications</th>
-                                <th>Status</th>
-                                <th>Due Date</th>
-                                <th>Days Left</th>
+                                <th><?php echo esc_html__("Applications", "health-care"); ?></th>
+                                <th><?php echo esc_html__("Status", "health-care"); ?></th>
+                                <th><?php echo esc_html__("Due Date", "health-care"); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><a href="#">Application #1</a></td>
-                                <td><span class="status acknowledged">Acknowledged</span></td>
-                                <td>Nov 12, 2025</td>
-                                <td>19 days left</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Application #2</a></td>
-                                <td><span class="status acknowledged">Acknowledged</span></td>
-                                <td>Nov 12, 2025</td>
-                                <td>19 days left</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Application #3</a></td>
-                                <td><span class="status denied">Denied</span></td>
-                                <td>Nov 12, 2025</td>
-                                <td>19 days left</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Application #4</a></td>
-                                <td><span class="status approved">Approved</span></td>
-                                <td>Nov 12, 2025</td>
-                                <td>19 days left</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Application #5</a></td>
-                                <td><span class="status follow-up">Follow-up</span></td>
-                                <td>Nov 12, 2025</td>
-                                <td>19 days left</td>
-                            </tr>
+                            <?php
+                            if (have_rows('applications')) :
+                                while (have_rows('applications')) : the_row();
+                                    // Get sub field values
+                                    $application_name = get_sub_field('application_name');
+                                    $application_status = get_sub_field('application_status');
+                                    $application_expiry_date = get_sub_field('application_expiry_date');
+
+                                    // Determine badge class based on status
+                                    $badge_class = 'success';
+                                    $status_lower = strtolower($application_status);
+                                    if (strpos($status_lower, 'denied') !== false) {
+                                        $badge_class = 'danger';
+                                    } elseif (strpos($status_lower, 'follow') !== false) {
+                                        $badge_class = 'warning';
+                                    } elseif (strpos($status_lower, 'awaiting') !== false || strpos($status_lower, 'acknowledged') !== false) {
+                                        $badge_class = 'info';
+                                    }
+
+                            ?>
+                                    <tr>
+                                        <td><?php echo esc_html($application_name); ?></td>
+                                        <td><span class="badge <?php echo esc_attr($badge_class); ?>"><?php echo esc_html($application_status); ?></span></td>
+                                        <td><?php echo esc_html($application_expiry_date); ?></td>
+                                    </tr>
+                                <?php
+                                endwhile;
+                                wp_reset_postdata();
+
+
+                            else:
+                                ?>
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">
+                                        <?php echo esc_html__("No applications found.", "health-care"); ?>
+                                    </td>
+                                </tr>
+                            <?php
+                            endif;
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -500,7 +510,7 @@ get_header();
                     <button class="btn-solid-blue">OPEN TICKETS</button>
                     <button class="btn-solid-green">CREATE A TICKET</button>
                 </div>
-                
+
             </div>
         </aside>
     </div>
