@@ -720,9 +720,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mainTitle) {
             mainTitle.innerHTML = `${appName} <span style="color: black;"> (${dateDisplay})</span>`;
         }
-        
-        // Optional: Log which application was clicked
-        console.log(`Opened: ${appName} - Due: ${dateDisplay}`);
     }
 });
 
