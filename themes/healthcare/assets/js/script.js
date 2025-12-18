@@ -642,16 +642,109 @@ window.resetFilters = function () {
 }
 
 
+// Dynamic Application Table Click Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const appRows = document.querySelectorAll('.application-table tbody tr');
+    const appDetails = document.getElementById('application-details');
+    
+    // Initially hide the application details
+    if (appDetails) {
+        appDetails.style.display = 'none';
+    }
+    
+    // Add click handler to each application row
+    appRows.forEach((row, index) => {
+        // Skip the "no applications" row if it exists
+        if (row.querySelector('td[colspan]')) return;
+        
+        // Make row clickable
+        row.style.cursor = 'pointer';
+        
+        // Get application data from the row
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 3) return;
+        
+        const appName = cells[0].textContent.trim();
+        const appStatus = cells[1].textContent.trim();
+        const appDueDate = cells[2].textContent.trim();
+        
+        row.addEventListener('click', function(e) {
+            // Prevent default if clicking on a link
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+            }
+            
+            // Show the application details section
+            if (appDetails) {
+                // Update the application details dynamically
+                updateApplicationDetails(appName, appDueDate, index + 1);
+                
+                // Show the details section
+                appDetails.style.display = 'block';
+                
+                // Smooth scroll to the details section
+                setTimeout(() => {
+                    appDetails.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+                
+                // Add active state to clicked row
+                appRows.forEach(r => r.classList.remove('active-row'));
+                this.classList.add('active-row');
+            }
+        });
+    });
+    
+    // Function to update application details dynamically
+    function updateApplicationDetails(appName, dueDate, appNumber) {
+        // Format the date (convert from DD/MM/YYYY to readable format)
+        let dateDisplay = dueDate || 'Nov 12, 2025';
+        
+        // If date is in format like "31/12/2025", convert it
+        if (dueDate && dueDate.includes('/')) {
+            const dateParts = dueDate.split('/');
+            if (dateParts.length === 3) {
+                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const day = parseInt(dateParts[0]);
+                const month = parseInt(dateParts[1]) - 1;
+                const year = dateParts[2];
+                dateDisplay = `${monthNames[month]} ${day}, ${year}`;
+            }
+        }
+        
+        // Update ONLY the first h2 inside the application-details div (the main title)
+        const mainTitle = appDetails.querySelector('h2');
+        if (mainTitle) {
+            mainTitle.innerHTML = `${appName} <span style="color: black;"> (${dateDisplay})</span>`;
+        }
+        
+        // Optional: Log which application was clicked
+        console.log(`Opened: ${appName} - Due: ${dateDisplay}`);
+    }
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
+// Add CSS for hover and active states
+const style = document.createElement('style');
+style.textContent = `
+    .application-table tbody tr:not([colspan]) {
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    
+    .application-table tbody tr:not([colspan]):hover {
+        background-color: #f3f4f6;
+        transform: translateX(2px);
+    }
+    
+    .application-table tbody tr.active-row {
+        background-color: #dbeafe;
+        border-left: 3px solid #0ea5e9;
+    }
+    
+    .application-table tbody tr:not([colspan]) td:first-child {
+        font-weight: 500;
+    }
+`;
+document.head.appendChild(style);
