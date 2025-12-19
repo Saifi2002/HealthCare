@@ -16,7 +16,7 @@ let selectedEndDate = null;
 let currentCalendarDate = new Date();
 
 // Pagination State and Configuration
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 8;
 let paginationRows = [];
 let currentPage = 1;
 
