@@ -4,15 +4,11 @@ get_header();
 
 <div class="container">
     <h1 class="title"><?php echo esc_html__(get_the_title(), "health-care"); ?></h1>
-
     <h2 class="table-title"><?php echo esc_html__("Applications", "health-care"); ?></h2>
     <div class="grid">
-
         <main class="main-content">
-
             <div class="card main-card">
                 <div class=" table-container custom-table-container">
-
                     <table class="application-table">
                         <thead>
                             <tr>
@@ -40,7 +36,6 @@ get_header();
                                     } elseif (strpos($status_lower, 'awaiting') !== false || strpos($status_lower, 'acknowledged') !== false) {
                                         $badge_class = 'info';
                                     }
-
                             ?>
                                     <tr>
                                         <td><a href="#application-details"><?php echo esc_html($application_name); ?></a></td>
@@ -371,7 +366,6 @@ get_header();
                             </div>
                         </div>
                     </div>
-
                 </div>
         </main>
         <aside class="sidebar">
