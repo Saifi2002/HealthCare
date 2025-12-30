@@ -2,6 +2,7 @@
 /* Template Name: Dashboard Template */
 get_header();
 ?>
+
 <div class="container">
     <?php
     $user = wp_get_current_user();

@@ -472,10 +472,6 @@ window.loadPage = function (pageNumber) {
     renderPaginationLinks();
 }
 
-
-
-
-
 function matchesType(row, typeFilter) {
     if (typeFilter === 'all') return true;
 
@@ -492,6 +488,7 @@ function matchesType(row, typeFilter) {
     // Safety fallback (name match)
     return rowCategoryName === filterValue;
 }
+
 function matchesStatus(row, statusFilter) {
     if (statusFilter === 'all') return true;
 
@@ -506,6 +503,7 @@ function matchesStatus(row, statusFilter) {
 
     return badgeText === statusFilter;
 }
+
 function matchesDateRange(row, startDate, endDate) {
     if (!startDate && !endDate) return true;
 
@@ -528,9 +526,6 @@ function matchesDateRange(row, startDate, endDate) {
 
     return true;
 }
-
-
-
 
 // --- MASTER FILTER (FIXED) ---
 window.applyFilters = function () {
@@ -559,7 +554,6 @@ window.applyFilters = function () {
     currentPage = 1;
     sortRows();
 };
-
 
 // --- SORTING LOGIC ---
 window.sortRows = function () {
@@ -591,7 +585,6 @@ window.sortRows = function () {
     renderPaginationLinks();
 };
 
-
 // --- STRIPING LOGIC ---
 function reapplyStriping() {
     const tableBody = document.getElementById('tableBody');
@@ -608,7 +601,6 @@ function reapplyStriping() {
         }
     });
 }
-
 
 // --- RESET BUTTON ---
 window.resetFilters = function () {
@@ -640,7 +632,6 @@ window.resetFilters = function () {
     // Reset to show all posts
     fetchPosts('all');
 }
-
 
 // Dynamic Application Table Click Handler
 document.addEventListener('DOMContentLoaded', function() {
@@ -706,8 +697,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dueDate && dueDate.includes('/')) {
             const dateParts = dueDate.split('/');
             if (dateParts.length === 3) {
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 const day = parseInt(dateParts[0]);
                 const month = parseInt(dateParts[1]) - 1;
                 const year = dateParts[2];

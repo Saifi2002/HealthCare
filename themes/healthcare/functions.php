@@ -4,7 +4,6 @@ add_action('wp_enqueue_scripts', 'healthcare_enqueue_styles');
 if (! function_exists('healthcare_enqueue_styles')) {
     function healthcare_enqueue_styles()
     {
-
         // Local stylesheet
         wp_enqueue_style(
             'healthcare-style',
@@ -57,7 +56,6 @@ if (! function_exists('healthcare_enqueue_styles')) {
 if (! function_exists('healthcare_enqueue_scripts')) {
     function healthcare_enqueue_scripts()
     {
-
         // Enqueue JS in footer
         wp_enqueue_script(
             'healthcare-ui-js',
@@ -187,7 +185,6 @@ add_action('init', 'application_post_type');
 if (! function_exists('application_post_type')) {
     function application_post_type()
     {
-
         $labels = array(
             'name'                  => _x('Applications', 'health-care'),
             'singular_name'         => _x('Application', 'health-care'),
