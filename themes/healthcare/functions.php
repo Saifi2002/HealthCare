@@ -61,7 +61,7 @@ if (! function_exists('healthcare_enqueue_scripts')) {
             'healthcare-ui-js',
             get_template_directory_uri() . '/assets/js/script.js',
             array(), // dependencies
-            filemtime( get_template_directory() . '/assets/js/script.js' ),
+            filemtime(get_template_directory() . '/assets/js/script.js'),
             true // load in footer
         );
 
@@ -203,7 +203,6 @@ if (! function_exists('application_post_type')) {
             'view_items'            => __('View Applications', 'health-care'),
             'search_items'          => __('Search Application', 'health-care'),
         );
-
         $args = array(
             'label'                 => __('Application', 'health-care'),
             'description'           => __('Post Type for Applications', 'health-care'),

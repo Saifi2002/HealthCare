@@ -70,35 +70,28 @@ get_header();
                 <div class="application-details" id="application-details">
                     <h2><span style="color: black;"> </span></h2>
                     <p>What would you like to do?</p>
-
                     <div class="action-buttons">
                         <button class="tab active" onclick="openTab(event, 'tab-review')">REVIEW SUPPORTING DOCUMENTS</button>
                         <button class="tab" onclick="openTab(event, 'tab-signing')">VIEW SIGNING DOCUMENT</button>
                         <button class="tab" onclick="openTab(event, 'tab-approve')">APPROVE/DENY PROVIDER</button>
                     </div>
-
                     <div id="tab-review" class="tab-content">
                         <div class="document-list">
                             <h3>Applicant Uploaded Documents</h3>
-
                             <div class="document-item">
                                 <div class="document-name">
                                     <i class="fa-solid fa-circle-dot"></i>
                                     <p> <a href="#">Upload: Resume that documents at least one year of supervisory experience*</a> </p>
                                 </div>
-
                                 <div class="document-actions-radio-group">
                                     <input type="radio" id="doc-accept_1" name="document-action_1" value="accept" style="display: none;">
                                     <label for="doc-accept_1" class="btn-accept">ACCEPT</label>
-
                                     <input type="radio" id="doc-reject_1" name="document-action_1" value="reject" style="display: none;">
                                     <label for="doc-reject_1" class="btn-reject">REJECT</label>
                                 </div>
                             </div>
                         </div>
-
                         <hr class="divider">
-
                         <div class="what-to-do">
                             <h3>What would you like to do?</h3>
                             <div class="action-buttons">
@@ -114,7 +107,6 @@ get_header();
                                 <div class="what-to-do-actions"><button class="btn-replace">REPLACE</button></div>
                             </div>
                         </div>
-
                         <form action="/submit" method="POST" enctype="multipart/form-data">
                             <div class="card main-card">
                                 <div class="table-container ">
@@ -122,7 +114,6 @@ get_header();
                                     <div class="application-upload">
                                         <h3>Application upload replaced by post <span style="color: black;">(ID117545)</span></h3>
                                         <p>Replacing upload: <br> <span style="color: #DB3239;">Upload: Resume that documents at least one year of supervisory experience*</span></p>
-
                                         <div class="upload-grid">
                                             <div class="grid-col-left">
                                                 <label class="field-label">
@@ -142,13 +133,11 @@ get_header();
                                                 <textarea id="file-note" name="application_note"></textarea>
                                             </div>
                                         </div>
-
                                         <div class="supplemental-docs">
                                             <p class="bold-text">Do you need to upload supplemental documents on behalf of the provider?</p>
                                             <div class="radio-button-set">
                                                 <input type="radio" id="choice-yes" name="user-choice" value="yes">
                                                 <input type="radio" id="choice-no" name="user-choice" value="no">
-
                                                 <div class="button-group">
                                                     <button type="button" class="btn-yes" data-target="choice-yes">Yes!</button>
                                                     <button type="button" class="btn-no" data-target="choice-no">No!</button>
@@ -156,9 +145,7 @@ get_header();
                                             </div>
                                         </div>
                                     </div>
-
                                     <hr class="divider">
-
                                     <div class="supporting-document-upload">
                                         <h3>Upload Supporting Document</h3>
                                         <div class="full-width-row">
@@ -190,38 +177,28 @@ get_header();
                             </div>
                         </form>
                     </div>
-
                     <div id="tab-signing" class="tab-content" style="display: none;">
                         <div class="signing-tab-wrapper">
-
                             <h3 class="tab-title">Signing Document</h3>
-
                             <div class="document-preview-container">
                                 <div class="doc-header-bar">
                                     <span>NM HSD Behavioral Health Services Division</span>
                                     <span class="verified-badge"><i class="fa-solid fa-lock"></i> Verified</span>
                                 </div>
-
                                 <div class="doc-paper">
-
                                     <div class="doc-logo-area">
                                         <i class="fa-solid fa-plus-circle fake-logo"></i>
                                         <div class="fake-logo-text">HUMAN SERVICES <br> <small style="font-size: 10px;">DEPARTMENT</small></div>
                                     </div>
-
                                     <h1>CCSS Application - Jessica Johnson</h1>
-
                                     <div class="page-break">---------------------------- Page 1 ----------------------------</div>
-
                                     <h4>Guide</h4>
-
                                     <h5>When to Submit the Application:</h5>
                                     <ul>
                                         <li>Agencies/Organization who want to provide Comprehensive Community Support Services (CCSS) and have never applied before</li>
                                         <li>Agencies/Organizations who are opening a new location (requires separate application)</li>
                                         <li>After completion of the <a href="#" class="doc-link">required training</a> related to providing clinical supervision of non-clinical staff</li>
                                     </ul>
-
                                     <h5>Supporting Documentation to Gather: CCSS Clinical Supervisor:</h5>
                                     <ul>
                                         <li>Copy of License</li>
@@ -231,22 +208,18 @@ get_header();
                                         <li>Copy of CCSS Training Certificate</li>
                                         <li>Resumé (detailing one or more years of supervisory experience)</li>
                                     </ul>
-
                                     <h5>CCSS Program Supervisor (if this is a different person...):</h5>
                                     <ul>
                                         <li>Copy of Bachelor's Degree in a human services field from an accredited university</li>
                                         <li>Resumé (detailing four years relevant experience...)</li>
                                         <li>Copy of CCSS Training Certificate</li>
                                     </ul>
-
                                     <p style="margin-top: 20px; font-size: 11px;">
                                         If you have hired CSWs/CPSWs, you will be required to state their names and upload the following documents <br>
                                         <strong>(*IMPORTANT NOTE: These documents must be combined into a single PDF before uploading):</strong>
                                     </p>
-
                                 </div>
                             </div>
-
                             <div class="signing-footer-actions">
                                 <button class="btn-main-site">Back to Main Site</button>
                                 <div class="right-buttons">
@@ -254,27 +227,19 @@ get_header();
                                     <button class="btn-black">Save as PDF</button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
                     <div id="tab-approve" class="tab-content" style="display: none;">
                         <div class="card main-card" style="margin-top: 24px;">
                             <div class="table-container ">
-
                                 <label class="field-label-small">Choose one:</label>
                                 <div class="action-row-spaced radio-group">
-
                                     <input type="radio" id="radio-approve" name="approval-status" value="approve">
                                     <label for="radio-approve" class="btn-approve">APPROVE</label>
-
                                     <input type="radio" id="radio-deny" name="approval-status" value="deny">
                                     <label for="radio-deny" class="btn-deny">DENY</label>
-
                                 </div>
-
                                 <h3>Let's generate your APPROVAL letter.</h3>
-
                                 <div class="form-row-equal">
                                     <div>
                                         <label class="field-label-small">Date: <span class="required">*</span></label>
@@ -287,11 +252,8 @@ get_header();
                                         <input type="text" placeholder="Put contact name here">
                                     </div>
                                 </div>
-
                                 <label class="field-label-small">Select Approvals:</label>
-
                                 <div class="tags-selector-container" id="approvals-component">
-
                                     <select id="program-select" name="approvals[]" multiple style="display: none;">
                                         <option value="ccss" data-short="CCSS" selected>CCSS (Community Support Services)</option>
                                         <option value="iop" data-short="IOP" selected>IOP (Intensive Outpatient Program)</option>
@@ -299,13 +261,11 @@ get_header();
                                         <option value="mss" data-short="MSS">MSS (Multi-Systemic Therapy)</option>
                                         <option value="pop" data-short="POP">POP (something)</option>
                                     </select>
-
                                     <div class="tags-input-box" onclick="toggleTagsMenu()">
                                         <div class="tags-list-area" id="active-tags-list">
                                         </div>
                                         <i class="fa-solid fa-chevron-down" id="tags-arrow" style="color: #6b7280; font-size: 12px;"></i>
                                     </div>
-
                                     <div class="tags-dropdown-menu" id="tags-menu">
                                         <p class="menu-label">Program-Specific Selections</p>
                                         <div id="available-options-list">
@@ -313,25 +273,19 @@ get_header();
                                         <p class="menu-note">*You can choose multiple Programs</p>
                                         <button type="button" class="btn-apply-sm" onclick="toggleTagsMenu()">Apply Now</button>
                                     </div>
-
                                 </div>
-
                                 <div class="full-width-row">
                                     <label class="field-label-small">Custom Message: <span class="required">*</span></label>
                                     <textarea placeholder="Add custom message (optional)" style="height: 120px;"></textarea>
                                 </div>
-
                                 <div class="right-align-container">
                                     <button class="btn-approve">GENERATE LETTER</button>
                                 </div>
-
                                 <h3 style="color: #333; font-size: 14px; margin-bottom: 12px;">What would you like to do?</h3>
-
                                 <div class="action-row-spaced">
                                     <button class="btn-outline-black">DOWNLOAD LETTER</button>
                                     <button class="btn-orange">EMAIL LETTER TO PROVIDER</button>
                                 </div>
-
                                 <div class="form-row-equal">
                                     <div>
                                         <label class="field-label-small">To: <span class="required">*</span></label>
@@ -342,27 +296,22 @@ get_header();
                                         <input type="text" placeholder="Pre-population Manager Email cxnx@nmrecovery.org">
                                     </div>
                                 </div>
-
                                 <div class="full-width-row">
                                     <label class="field-label-small">CC: <span class="required">*</span></label>
                                     <input type="text">
                                 </div>
-
                                 <div class="full-width-row">
                                     <label class="field-label-small">Subject: <span class="required">*</span></label>
                                     <input type="text">
                                 </div>
-
                                 <div class="full-width-row">
                                     <label class="field-label-small">Message <span class="required">*</span></label>
                                     <textarea style="height: 150px;"></textarea>
                                 </div>
-
                                 <div class="footer-buttons-split">
                                     <button class="btn-orange">SAVE DRAFT</button>
                                     <button class="btn-approve">SEND</button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -380,52 +329,42 @@ get_header();
             ?>
             <div class="sidebar-card">
                 <h2>AGENCY CONTACT INFORMATION</h2>
-
                 <div class="info-group">
                     <p class="label">Agency Name:</p>
                     <p class="value"><?php echo $agency_name; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">Person's Name:</p>
                     <p class="value"><?php echo $contact_name; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">Email:</p>
                     <p class="value"><?php echo $email; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">Phone:</p>
                     <p class="value"><?php echo $phone; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">Address:</p>
                     <p class="value"><?php echo $address; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">NPI:</p>
                     <p class="value"><?php echo $npi; ?></p>
                 </div>
-
                 <div class="info-group">
                     <p class="label">Medicaid ID:</p>
                     <p class="value"><?php echo $medicaid_id; ?></p>
                 </div>
-
                 <div class="sidebar-actions">
                     <button class="btn-outline-red">UPDATE ADDRESS</button>
                     <button class="btn-solid-green">SEND EMAIL</button>
                 </div>
             </div>
-
             <div class="sidebar-card">
                 <h2 class="blue-header">NOTE LOG</h2>
                 <div class="timeline">
-
                     <div class="timeline-item">
                         <div class="dot green"></div>
                         <div class="content">
@@ -444,7 +383,6 @@ get_header();
                             <p class="log-date"><i class="fa-regular fa-clock"></i> Jan 23, 2025 — 3:41 PM</p>
                         </div>
                     </div>
-
                     <div class="timeline-item">
                         <div class="dot green"></div>
                         <div class="content">
@@ -456,11 +394,9 @@ get_header();
                     </div>
                 </div>
             </div>
-
             <div class="sidebar-card">
                 <h2 class="blue-header">BHSD ACTIVITY LOG</h2>
                 <div class="timeline">
-
                     <div class="timeline-item">
                         <div class="dot green"></div>
                         <div class="content">
@@ -469,7 +405,6 @@ get_header();
                             <p class="log-status">Status: <span class="blue-text">Viewed successfully.</span></p>
                         </div>
                     </div>
-
                     <div class="timeline-item">
                         <div class="dot orange"></div>
                         <div class="content">
@@ -480,18 +415,16 @@ get_header();
                     </div>
                 </div>
             </div>
-
             <div class="sidebar-card">
                 <h2 class="blue-header">SUPPORT</h2>
                 <div class="sidebar-actions">
                     <button class="btn-solid-blue">OPEN TICKETS</button>
                     <button class="btn-solid-green">CREATE A TICKET</button>
                 </div>
-
             </div>
         </aside>
     </div>
-</div>  
+</div>
 
 <?php
 get_footer();
