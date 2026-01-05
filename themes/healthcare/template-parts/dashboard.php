@@ -8,7 +8,6 @@ get_header();
     $user = wp_get_current_user();
     ?>
     <h1 class="title"><?php echo esc_html__('WELCOME', 'health-care'); ?> <?php echo strtoupper($user->user_login); ?></h1>
-
     <div class="grid">
         <main class="main-content">
             <div class="card main-card">
